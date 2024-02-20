@@ -27,3 +27,14 @@ import * as THREE from 'three';
 
 - Camera
 - Renderer
+
+## Transforming an object
+
+- ther are 4 properties to transform an object
+
+  - position
+  - scale
+  - rotation
+  - quaternion
+
+- All classes inherit from the Object3D possesses those preoerties like ProsperciveCamera or Mesh, check three js docs
