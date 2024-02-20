@@ -1,36 +1,35 @@
-import * as THREE from 'three';
+import * as Three from 'three';
 
 const canvas = document.querySelector('canvas.webgl');
-// Sceene
-const scene = new THREE.Scene();
 
-// Object
-const myGeometry = new THREE.BoxGeometry(1, 1, 1); // width , height and depth,
-const material = new THREE.MeshBasicMaterial({
-  color: 'yellow',
+// scene
+const scene = new Three.Scene();
+
+// object
+
+const geometry = new Three.BoxGeometry(2, 2, 2);
+const material = new Three.MeshBasicMaterial({
+  color: 'blue',
   wireframe: true,
 });
-const mesh = new THREE.Mesh(myGeometry, material);
+const mesh = new Three.Mesh(geometry, material);
 
 scene.add(mesh);
 
 // camera
-// Lets start with the PerspectiveCamera class, Two essential paramters: field of view and aspect ratio
 let sizes = {
-  width: 800,
-  height: 600,
+  width: 1000,
+  height: 800,
 };
 
-// Camera
-const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height);
-camera.position.z = 3;
+const camera = new Three.PerspectiveCamera(35, sizes.width / sizes.height);
+camera.position.z = 5;
 scene.add(camera);
 
 // renderer
-const renderer = new THREE.WebGLRenderer({
+const renderer = new Three.WebGLRenderer({
   canvas: canvas,
 });
 
 renderer.setSize(sizes.width, sizes.height);
-
 renderer.render(scene, camera);
