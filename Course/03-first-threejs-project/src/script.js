@@ -1,29 +1,27 @@
 import * as Three from 'three';
 
 const canvas = document.querySelector('canvas.webgl');
-
+console.log(canvas);
 // scene
 const scene = new Three.Scene();
 
-// object
-
-const geometry = new Three.BoxGeometry(2, 2, 2);
+const geometry = new Three.BoxGeometry(1, 1, 1);
 const material = new Three.MeshBasicMaterial({
-  color: 'blue',
+  color: 0xff0000,
   wireframe: true,
 });
 const mesh = new Three.Mesh(geometry, material);
-
 scene.add(mesh);
 
-// camera
-let sizes = {
-  width: 1000,
-  height: 800,
+// sizes
+const sizes = {
+  height: 600,
+  width: 800,
 };
 
-const camera = new Three.PerspectiveCamera(35, sizes.width / sizes.height);
-camera.position.z = 5;
+// camera
+const camera = new Three.PerspectiveCamera(75, sizes.width / sizes.height);
+camera.position.z = 1.5;
 scene.add(camera);
 
 // renderer
