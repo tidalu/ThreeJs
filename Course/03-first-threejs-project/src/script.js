@@ -1,14 +1,12 @@
 import * as Three from 'three';
 
 const canvas = document.querySelector('canvas.webgl');
-console.log(canvas);
 // scene
 const scene = new Three.Scene();
 
 const geometry = new Three.BoxGeometry(1, 1, 1);
 const material = new Three.MeshBasicMaterial({
   color: 0xff0000,
-  wireframe: true,
 });
 const mesh = new Three.Mesh(geometry, material);
 scene.add(mesh);
