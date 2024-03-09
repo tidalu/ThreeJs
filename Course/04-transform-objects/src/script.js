@@ -5,21 +5,21 @@ const canvas = document.querySelector('canvas.webgl');
 const scene = new THREE.Scene();
 
 const object = new THREE.Mesh(
-  new THREE.BoxGeometry(2, 1, 1),
-  new THREE.MeshBasicMaterial({ color: 0xff0000 })
+  new THREE.BoxGeometry(1, 1, 1),
+  new THREE.MeshBasicMaterial({ color: 'lightblue', wireframe: true })
 );
-object.position.x = 0.7;
-object.position.y = -0.6;
+// object.position.x = 0.7;
+// object.position.y = -0.6;
 
-object.position.set(0.7, -0.9, 0);
+// object.position.set(0.7, -0.9, 0);
 
-object.scale.x = 2;
-object.scale.y = 0.5;
-object.scale.z = 0.5;
+object.scale.x = 1;
+object.scale.y = 1;
+object.scale.z = 1;
 scene.add(object);
 
 const axesHelper = new THREE.AxesHelper();
-scene.add(axesHelper);
+// scene.add(axesHelper);
 
 const sizes = {
   width: 800,
@@ -36,4 +36,11 @@ const renderer = new THREE.WebGLRenderer({
 });
 
 renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.render(scene, camera);
+
+function animate() {
+  requestAnimationFrame(animate);
+  object.rotation.x += 0.01;
+  object.rotation.y += 0.01;
+  renderer.render(scene, camera);
+}
+animate();
