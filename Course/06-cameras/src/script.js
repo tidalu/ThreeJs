@@ -21,8 +21,8 @@ const canvas = document.querySelector('canvas.webgl');
 
 // Sizes
 const sizes = {
-  width: 1130,
-  height: 850,
+  width: 375,
+  height: 812,
 };
 
 // Scene
