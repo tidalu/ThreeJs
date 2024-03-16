@@ -25,3 +25,25 @@
 - The PerspectiveCamera is the one we already used and simulated a real-life camera with perspective.
 
 - We are going to focus on the OrthographicCamera and the PerspectiveCamera.
+
+## We have biltin controls,
+
+### DeviceOrientationControls
+
+- it is used with smartfons actually, like when we hold our phone we can move our smart phones to see around, this is really cool, but not ios stopped recently
+
+### Fly Controls
+
+### First Person Control
+
+### Pointer lock controls,
+
+- it is with mouse
+
+### Orbuit controls
+
+### Trackbal controls
+
+### Transfiorm controls
+
+### Drag controls
