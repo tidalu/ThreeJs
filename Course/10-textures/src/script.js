@@ -22,7 +22,8 @@ loadingManager.onError = () => {
 };
 
 const textureLoader = new THREE.TextureLoader(loadingManager);
-const colorTexture = textureLoader.load('/textures/door/color.jpg');
+// const colorTexture = textureLoader.load('/textures/door/color.jpg');
+const colorTexture = textureLoader.load('/textures/minecraft.png');
 colorTexture.colorSpace = THREE.SRGBColorSpace;
 const alphaTexture = textureLoader.load('/textures/door/alpha.jpg');
 const heightTexture = textureLoader.load('/textures/door/height.jpg');
@@ -32,6 +33,21 @@ const ambientOcclusionTexture = textureLoader.load(
 );
 const metalnessTexture = textureLoader.load('/textures/door/metalness.jpg');
 const rougnessTexture = textureLoader.load('/textures/door/roughness.jpg');
+
+// colorTexture.repeat.x = 2;
+// colorTexture.repeat.y = 3;
+// colorTexture.wrapS = THREE.MirroredRepeatWrapping;
+// colorTexture.wrapT = THREE.MirroredRepeatWrapping;
+// colorTexture.offset.x = 0.5;
+// colorTexture.offset.y = 0.5;
+
+// colorTexture.rotation = Math.PI / 4;
+// colorTexture.center.x = 0.5;
+// colorTexture.center.y = 0.5;
+
+// colorTexture.minFilter = THREE.NearestFilter;
+colorTexture.magFilter = THREE.NearestFilter;
+// it is better usin nerestFilter for better fps
 
 /**
  * Base
@@ -52,6 +68,10 @@ console.log(geometry.attributes.uv);
 const material = new THREE.MeshBasicMaterial({ map: colorTexture });
 const mesh = new THREE.Mesh(geometry, material);
 scene.add(mesh);
+gui.add(mesh.position, 'x', 0, 10, 1);
+gui.add(mesh.position, 'y', 0, 10, 1);
+gui.add(mesh.scale, 'y', 0, 10, 1);
+gui.add(mesh.scale, 'x', 0, 10, 1);
 
 /**
  * Sizes
