@@ -36,7 +36,7 @@ donutTexture.colorSpace = THREE.SRGBColorSpace;
  */
 const fontLoader = new FontLoader();
 fontLoader.load('/fonts/helvetiker_regular.typeface.json', (font) => {
-  const textGeometry = new TextGeometry('Ulugbek', {
+  const textGeometry = new TextGeometry('Zebiniso', {
     font: font,
     size: 0.5,
     height: 0.2,
