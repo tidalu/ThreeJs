@@ -36,7 +36,7 @@ donutTexture.colorSpace = THREE.SRGBColorSpace;
  */
 const fontLoader = new FontLoader();
 fontLoader.load('/fonts/helvetiker_regular.typeface.json', (font) => {
-  const textGeometry = new TextGeometry('Zebiniso', {
+  const textGeometry = new TextGeometry('Ulugbek', {
     font: font,
     size: 0.5,
     height: 0.2,
@@ -117,17 +117,17 @@ fontLoader.load('/fonts/helvetiker_regular.typeface.json', (font) => {
     const octahedronMesh = new THREE.Mesh(octahedronGeometry, coneMaterial);
     const heartMesh = new THREE.Mesh(heartGeometry, hearMaterial);
 
-    donut.position.x = (Math.random() - 0.5) * 20;
-    donut.position.y = (Math.random() - 0.5) * 20;
-    donut.position.z = (Math.random() - 0.5) * 20;
+    donut.position.x = (Math.random() - 0.5) * 15;
+    donut.position.y = (Math.random() - 0.5) * 15;
+    donut.position.z = (Math.random() - 0.5) * 15;
 
-    octahedronMesh.position.x = (Math.random() - 0.5) * 20;
-    octahedronMesh.position.y = (Math.random() - 0.5) * 20;
-    octahedronMesh.position.z = (Math.random() - 0.5) * 20;
+    octahedronMesh.position.x = (Math.random() - 0.5) * 15;
+    octahedronMesh.position.y = (Math.random() - 0.5) * 15;
+    octahedronMesh.position.z = (Math.random() - 0.5) * 15;
 
-    heartMesh.position.x = (Math.random() - 0.5) * 20;
-    heartMesh.position.y = (Math.random() - 0.5) * 20;
-    heartMesh.position.z = (Math.random() - 0.5) * 20;
+    heartMesh.position.x = (Math.random() - 0.5) * 15;
+    heartMesh.position.y = (Math.random() - 0.5) * 15;
+    heartMesh.position.z = (Math.random() - 0.5) * 15;
 
     donut.rotation.x = Math.random() * Math.PI;
     donut.rotation.y = Math.random() * Math.PI;
@@ -209,6 +209,7 @@ renderer.setClearColor(0xffffff);
 /**
  * Animate
  */
+
 const clock = new THREE.Clock();
 
 const tick = () => {
@@ -217,11 +218,23 @@ const tick = () => {
   // Update controls
   controls.update();
 
+  // meshesh rotate
+  scene.traverse((child) => {
+    if (child instanceof THREE.Mesh && !isTextGeometry(child)) {
+      child.rotation.x += 0.015;
+      child.rotation.y += 0.015;
+    }
+  });
+
   // Render
   renderer.render(scene, camera);
 
   // Call tick again on the next frame
   window.requestAnimationFrame(tick);
 };
+
+function isTextGeometry(child) {
+  return child.geometry instanceof TextGeometry;
+}
 
 tick();
