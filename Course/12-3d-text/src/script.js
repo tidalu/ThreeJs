@@ -117,7 +117,7 @@ fontLoader.load('/fonts/helvetiker_regular.typeface.json', (font) => {
 
   gui
     .add({ text: 'Ulugbek' }, 'text')
-    .name('Name / Ismingiz :')
+    .name('Name/Ismingiz:')
     .onChange((input) => {
       text.geometry.dispose();
       const newTextGeometry = new TextGeometry(input, {
@@ -147,7 +147,7 @@ fontLoader.load('/fonts/helvetiker_regular.typeface.json', (font) => {
 
   gui
     .add(options, 'matcap', MatcapsTextures)
-    .name('Text material / tanlang:')
+    .name('material/tanlang:')
     .onChange(() => {
       material.matcap = textureLoader.load(options.matcap);
     });
@@ -204,7 +204,7 @@ fontLoader.load('/fonts/helvetiker_regular.typeface.json', (font) => {
 
   gui
     .add(Elements, 'showElements')
-    .name("Show Elements / elementlarni ko'rsatish :")
+    .name('Elements/elementlar :')
     .onChange(() => {
       scene.traverse((child) => {
         if (
@@ -348,7 +348,7 @@ let backgroundColor = {
 
 gui
   .addColor(backgroundColor, 'color')
-  .name('orqa fon rangi / background :')
+  .name('orqa fon/ background :')
   .onChange(updateBackgroundColor);
 
 function updateBackgroundColor(color) {
