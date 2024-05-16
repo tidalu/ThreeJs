@@ -352,6 +352,7 @@ ghost3.shadow.mapSize.width = 256;
 ghost3.shadow.mapSize.height = 256;
 ghost3.shadow.camera.far = 7;
 
+gui.close();
 /**
  * Animate
  */
