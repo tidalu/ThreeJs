@@ -16,6 +16,20 @@ const canvas = document.querySelector('canvas.webgl');
 // Scene
 const scene = new THREE.Scene();
 
+// audio
+const listener = new THREE.AudioListener();
+scene.add(listener);
+
+const sound = new THREE.Audio(listener);
+
+const audioLoader = new THREE.AudioLoader();
+audioLoader.load('./sound/sound.mp3', function (buffer) {
+  sound.setBuffer(buffer);
+  sound.setLoop(true);
+  sound.setVolume(0.5);
+  sound.play();
+});
+
 /**
  * Textures
  */
@@ -24,18 +38,18 @@ const textureLoader = new THREE.TextureLoader();
 
 // Floor
 
-const floorAlpha = textureLoader.load('./floor/alpha.jpg');
+const floorAlpha = textureLoader.load('./floor/alpha.webp');
 const floorColor = textureLoader.load(
-  './floor/coast_sand_rocks_02_1k/coast_sand_rocks_02_diff_1k.jpg'
+  './floor/coast_sand_rocks_02_1k/coast_sand_rocks_02_diff_1k.webp'
 );
 const floorARM = textureLoader.load(
-  './floor/coast_sand_rocks_02_1k/coast_sand_rocks_02_arm_1k.jpg'
+  './floor/coast_sand_rocks_02_1k/coast_sand_rocks_02_arm_1k.webp'
 );
 const floorNormal = textureLoader.load(
-  './floor/coast_sand_rocks_02_1k/coast_sand_rocks_02_nor_gl_1k.jpg'
+  './floor/coast_sand_rocks_02_1k/coast_sand_rocks_02_nor_gl_1k.webp'
 );
 const floorDisp = textureLoader.load(
-  './floor/coast_sand_rocks_02_1k/coast_sand_rocks_02_disp_1k.jpg'
+  './floor/coast_sand_rocks_02_1k/coast_sand_rocks_02_disp_1k.webp'
 );
 
 floorColor.colorSpace = THREE.SRGBColorSpace;
@@ -60,22 +74,15 @@ floorDisp.wrapT = THREE.RepeatWrapping;
 // walls
 
 const wallColor = textureLoader.load(
-  './walls/castle_brick_broken_06_1k/castle_brick_broken_06_diff_1k.jpg',
-  () => {
-    console.log('loaded');
-  }
+  './walls/castle_brick_broken_06_1k/castle_brick_broken_06_diff_1k.webp',
+  () => {}
 );
 const wallARM = textureLoader.load(
-  './walls/castle_brick_broken_06_1k/castle_brick_broken_06_arm_1k.jpg',
-  () => {
-    console.log('loaded');
-  }
+  './walls/castle_brick_broken_06_1k/castle_brick_broken_06_arm_1k.webp',
+  () => {}
 );
 const wallNormal = textureLoader.load(
-  './walls/castle_brick_broken_06_1k/castle_brick_broken_06_nor_gl_1k.jpg',
-  () => {
-    console.log('loaded');
-  }
+  './walls/castle_brick_broken_06_1k/castle_brick_broken_06_nor_gl_1k.webp'
 );
 
 wallColor.colorSpace = THREE.SRGBColorSpace;
@@ -83,13 +90,13 @@ wallColor.colorSpace = THREE.SRGBColorSpace;
 // roof
 
 const roofColor = textureLoader.load(
-  './roof/roof_slates_02_1k/roof_slates_02_diff_1k.jpg'
+  './roof/roof_slates_02_1k/roof_slates_02_diff_1k.webp'
 );
 const roofARM = textureLoader.load(
-  './roof/roof_slates_02_1k/roof_slates_02_arm_1k.jpg'
+  './roof/roof_slates_02_1k/roof_slates_02_arm_1k.webp'
 );
 const roofNormal = textureLoader.load(
-  './roof/roof_slates_02_1k/roof_slates_02_nor_gl_1k.jpg'
+  './roof/roof_slates_02_1k/roof_slates_02_nor_gl_1k.webp'
 );
 
 roofColor.colorSpace = THREE.SRGBColorSpace;
@@ -105,22 +112,16 @@ roofNormal.wrapS = THREE.RepeatWrapping;
 // bushes
 
 const bushColor = textureLoader.load(
-  './bushes/leaves_forest_ground_1k/leaves_forest_ground_diff_1k.jpg',
-  () => {
-    console.log('loaded');
-  }
+  './bushes/leaves_forest_ground_1k/leaves_forest_ground_diff_1k.webp',
+  () => {}
 );
 const bushARM = textureLoader.load(
-  './bushes/leaves_forest_ground_1k/leaves_forest_ground_arm_1k.jpg',
-  () => {
-    console.log('loaded');
-  }
+  './bushes/leaves_forest_ground_1k/leaves_forest_ground_arm_1k.webp',
+  () => {}
 );
 const bushNormal = textureLoader.load(
-  './bushes/leaves_forest_ground_1k/leaves_forest_ground_nor_gl_1k.jpg',
-  () => {
-    console.log('loaded');
-  }
+  './bushes/leaves_forest_ground_1k/leaves_forest_ground_nor_gl_1k.webp',
+  () => {}
 );
 
 bushColor.colorSpace = THREE.SRGBColorSpace;
@@ -138,22 +139,16 @@ bushNormal.wrapS = THREE.RepeatWrapping;
 // bushes
 
 const gravesColor = textureLoader.load(
-  './graves/plastered_stone_wall_1k/plastered_stone_wall_diff_1k.jpg',
-  () => {
-    console.log('loaded');
-  }
+  './graves/plastered_stone_wall_1k/plastered_stone_wall_diff_1k.webp',
+  () => {}
 );
 const gravesARM = textureLoader.load(
-  './graves/plastered_stone_wall_1k/plastered_stone_wall_arm_1k.jpg',
-  () => {
-    console.log('loaded');
-  }
+  './graves/plastered_stone_wall_1k/plastered_stone_wall_arm_1k.webp',
+  () => {}
 );
 const gravesNormal = textureLoader.load(
-  './graves/plastered_stone_wall_1k/plastered_stone_wall_nor_gl_1k.jpg',
-  () => {
-    console.log('loaded');
-  }
+  './graves/plastered_stone_wall_1k/plastered_stone_wall_nor_gl_1k.webp',
+  () => {}
 );
 
 gravesColor.colorSpace = THREE.SRGBColorSpace;
@@ -164,15 +159,15 @@ gravesNormal.repeat.set(0.3, 0.4);
 
 // door texture
 
-const doorColorTexture = textureLoader.load('./door/color.jpg');
-const doorAlphaTexture = textureLoader.load('./door/alpha.jpg');
+const doorColorTexture = textureLoader.load('./door/color.webp');
+const doorAlphaTexture = textureLoader.load('./door/alpha.webp');
 const doorAmbientOcclusionTexture = textureLoader.load(
-  './door/ambientOcclusion.jpg'
+  './door/ambientOcclusion.webp'
 );
-const doorHeightTexture = textureLoader.load('./door/height.jpg');
-const doorNormalTexture = textureLoader.load('./door/normal.jpg');
-const doorMetalnessTexture = textureLoader.load('./door/metalness.jpg');
-const doorRoughnessTexture = textureLoader.load('./door/roughness.jpg');
+const doorHeightTexture = textureLoader.load('./door/height.webp');
+const doorNormalTexture = textureLoader.load('./door/normal.webp');
+const doorMetalnessTexture = textureLoader.load('./door/metalness.webp');
+const doorRoughnessTexture = textureLoader.load('./door/roughness.webp');
 
 doorColorTexture.colorSpace = THREE.SRGBColorSpace;
 
@@ -357,6 +352,14 @@ scene.add(directionalLight);
 
 const doorLight = new THREE.PointLight('#ff7d46', 5);
 doorLight.position.set(0, 2.2, 2.5);
+
+// flicker point light
+const doorLightFlicker = () => {
+  const power = Math.tan(Date.now() * 0.001) * 0.2 + 0.5;
+  const power2 = Math.sin(Date.now() * 0.001) * 0.5 + 0.5;
+  doorLight.intensity = Math.random() > 0.5 ? power * 1.5 : power2 * 2;
+};
+
 house.add(doorLight);
 
 /**
@@ -489,6 +492,7 @@ ghost4.shadow.camera.far = 10;
  */
 const sky = new Sky();
 scene.add(sky);
+console.log(sky);
 
 sky.material.uniforms['turbidity'].value = 10;
 sky.material.uniforms['rayleigh'].value = 3;
@@ -496,8 +500,8 @@ sky.material.uniforms['mieCoefficient'].value = 0.1;
 sky.material.uniforms['mieDirectionalG'].value = 0.95;
 sky.material.uniforms['sunPosition'].value.set(0.3, -0.03, -0.95);
 
-
 sky.scale.setScalar(100);
+
 /**
  * Fog
  * */
@@ -548,6 +552,9 @@ const tick = () => {
     Math.tan(ghost4Angle) *
     Math.sin(elapsedTime * 2) *
     Math.sin(ghost4Angle * 3.4);
+
+  // door light flicker
+  doorLightFlicker();
 
   // Update controls
   controls.update();
