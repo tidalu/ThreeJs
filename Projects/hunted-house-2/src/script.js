@@ -171,6 +171,43 @@ const doorRoughnessTexture = textureLoader.load('./door/roughness.webp');
 
 doorColorTexture.colorSpace = THREE.SRGBColorSpace;
 
+
+// stars
+
+const starTexture = textureLoader.load('./stars/12.png')
+
+
+const particlesGeometry = new THREE.BufferGeometry();
+
+const count = 5000;
+
+const positions = new Float32Array(count * 3);
+const colors = new Float32Array(count * 3);
+
+for (let i = 0; i < count * 3; i++) {
+  positions[i] = ((Math.random() - 0.5)) * 20;
+  colors[i] = Math.random();
+}
+
+
+particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+const particlesMaterial = new THREE.PointsMaterial({
+  color:'black',
+  size: 0.2,
+  sizeAttenuation: true,
+  map: starTexture,
+  transparent: true,
+  alphaMap: starTexture,
+  depthWrite: false,
+  blending: THREE.AdditiveBlending,
+  vertexColors: true,
+});
+
+const particles = new THREE.Points(particlesGeometry, particlesMaterial);
+
+scene.add(particles);
 /**
  * House container
  */
@@ -500,6 +537,9 @@ sky.material.uniforms['mieCoefficient'].value = 0.1;
 sky.material.uniforms['mieDirectionalG'].value = 0.95;
 sky.material.uniforms['sunPosition'].value.set(0.3, -0.03, -0.95);
 
+// lower sky exposure 
+renderer.toneMappingExposure = 0.5;
+
 sky.scale.setScalar(100);
 
 /**
@@ -519,7 +559,27 @@ const tick = () => {
   timer.update();
   const elapsedTime = timer.getElapsed();
 
+  
+  // animate particles 
+
+  // rotate particles in both sides
+  particles.rotation.y = elapsedTime * 0.05;
+
+
+  
+  for (let i = 0; i < count; i++) {
+    const i3 = i * 3;
+    //animate like a grass
+    positions[i3 + 1] = 0.1 + Math.sin(elapsedTime * 2 + i) * 0.1;
+    
+  }
+
+  particlesGeometry.attributes.position.needsUpdate = true;
+  
   // ghost
+
+
+
 
   const ghost1Angle = elapsedTime * 0.5;
   ghost1.position.x = Math.cos(ghost1Angle) * 4;
