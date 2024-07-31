@@ -27,35 +27,67 @@ parameters.size = 0.01;
 parameters.radius = 5;
 parameters.branches = 3;
 parameters.spin = 1;
+parameters.randomness = 0.2;
+parameters.randomnessPower = 3;
+parameters.insideColor = '#ff6030';
+parameters.outsideColor = '#1b3984';
 
 let material = null;
 let geometry = null;
 let points = null;
 
-const generateGalaxy = (count, size, radius, branches, spin) => {
+const generateGalaxy = (
+  count,
+  size,
+  radius,
+  branches,
+  spin,
+  randomness,
+  randomnessPower,
+  insideColor,
+  outsideColor
+) => {
   if (points !== null) {
     geometry.dispose();
     material.dispose();
     scene.remove(points);
   }
   const positions = new Float32Array(count * 3);
+  const colors = new Float32Array(count * 3);
   geometry = new THREE.BufferGeometry();
 
+  const colorInside = new THREE.Color(insideColor);
+  const colorOutside = new THREE.Color(outsideColor);
+
   for (let i = 0; i < count; i++) {
-      
-      
-      const i3 = i * 3;
-      const rad = Math.random() * radius;
-      const spinAngle = rad * spin;
-      const branchesAngle = (i % branches) / branches * Math.PI * 2;
+    const i3 = i * 3;
 
+    // position
+    const rad = Math.random() * radius;
+    const spinAngle = rad * spin;
+    const branchesAngle = ((i % branches) / branches) * Math.PI * 2;
 
-    positions[i3] = Math.sin(branchesAngle + spinAngle) * rad; 
-    positions[i3 + 1] =  (Math.random() - 0.5) * .1;
-    positions[i3 + 2] = Math.cos(branchesAngle + spinAngle) * rad ;
+    const randomX =
+      Math.pow(Math.random(), randomnessPower) * (Math.random() > 0.5 ? 1 : -1);
+    const randomY =
+      Math.pow(Math.random(), randomnessPower) * (Math.random() > 0.5 ? 1 : -1);
+    const randomZ =
+      Math.pow(Math.random(), randomnessPower) * (Math.random() > 0.5 ? 1 : -1);
+    positions[i3] = Math.sin(branchesAngle + spinAngle) * rad + randomX;
+    positions[i3 + 1] = randomY;
+    positions[i3 + 2] = Math.cos(branchesAngle + spinAngle) * rad + randomZ;
+
+    // color
+    const mixedColor = colorInside.clone();
+    mixedColor.lerp(colorOutside, rad / radius);
+
+    colors[i3] = mixedColor.r;
+    colors[i3 + 1] = mixedColor.g;
+    colors[i3 + 2] = mixedColor.b;
   }
 
   geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
   // material
   material = new THREE.PointsMaterial({
@@ -63,6 +95,7 @@ const generateGalaxy = (count, size, radius, branches, spin) => {
     sizeAttenuation: true,
     depthWrite: false,
     blending: THREE.AdditiveBlending,
+    vertexColors: true,
   });
 
   // points
@@ -70,7 +103,17 @@ const generateGalaxy = (count, size, radius, branches, spin) => {
   scene.add(points);
 };
 
-generateGalaxy(parameters.count, parameters.size, parameters.radius, parameters.branches, parameters.spin);
+generateGalaxy(
+  parameters.count,
+  parameters.size,
+  parameters.radius,
+  parameters.branches,
+  parameters.spin,
+  parameters.randomness,
+  parameters.randomnessPower,
+  parameters.insideColor,
+  parameters.outsideColor
+);
 
 gui
   .add(parameters, 'count')
@@ -78,7 +121,17 @@ gui
   .max(1000000)
   .step(100)
   .onFinishChange(() => {
-    generateGalaxy(parameters.count, parameters.size, parameters.radius, parameters.branches, parameters.spin);
+    generateGalaxy(
+      parameters.count,
+      parameters.size,
+      parameters.radius,
+      parameters.branches,
+      parameters.spin,
+      parameters.randomness,
+      parameters.randomnessPower,
+      parameters.insideColor,
+      parameters.outsideColor
+    );
   });
 
 gui
@@ -87,7 +140,17 @@ gui
   .max(0.1)
   .step(0.001)
   .onFinishChange(() => {
-    generateGalaxy(parameters.count, parameters.size, parameters.radius, parameters.branches, parameters.spin);
+    generateGalaxy(
+      parameters.count,
+      parameters.size,
+      parameters.radius,
+      parameters.branches,
+      parameters.spin,
+      parameters.randomness,
+      parameters.randomnessPower,
+      parameters.insideColor,
+      parameters.outsideColor
+    );
   });
 
 gui
@@ -96,7 +159,17 @@ gui
   .max(20)
   .step(0.1)
   .onFinishChange(() => {
-    generateGalaxy(parameters.count, parameters.size, parameters.radius, parameters.branches, parameters.spin);
+    generateGalaxy(
+      parameters.count,
+      parameters.size,
+      parameters.radius,
+      parameters.branches,
+      parameters.spin,
+      parameters.randomness,
+      parameters.randomnessPower,
+      parameters.insideColor,
+      parameters.outsideColor
+    );
   });
 
 gui
@@ -105,17 +178,105 @@ gui
   .max(20)
   .step(1)
   .onFinishChange(() => {
-    generateGalaxy(parameters.count, parameters.size, parameters.radius, parameters.branches, parameters.spin);
+    generateGalaxy(
+      parameters.count,
+      parameters.size,
+      parameters.radius,
+      parameters.branches,
+      parameters.spin,
+      parameters.randomness,
+      parameters.randomnessPower,
+      parameters.insideColor,
+      parameters.outsideColor
+    );
   });
 
 gui
   .add(parameters, 'spin')
   .min(-5)
   .max(5)
-  .step(.001)
+  .step(0.001)
   .onFinishChange(() => {
-    generateGalaxy(parameters.count, parameters.size, parameters.radius, parameters.branches, parameters.spin);
+    generateGalaxy(
+      parameters.count,
+      parameters.size,
+      parameters.radius,
+      parameters.branches,
+      parameters.spin,
+      parameters.randomness,
+      parameters.randomnessPower,
+      parameters.insideColor,
+      parameters.outsideColor
+    );
   });
+
+gui
+  .add(parameters, 'randomness')
+  .min(0)
+  .max(2)
+  .step(0.001)
+  .onFinishChange(() => {
+    generateGalaxy(
+      parameters.count,
+      parameters.size,
+      parameters.radius,
+      parameters.branches,
+      parameters.spin,
+      parameters.randomness,
+      parameters.randomnessPower,
+      parameters.insideColor,
+      parameters.outsideColor
+    );
+  });
+
+gui
+  .add(parameters, 'randomnessPower')
+  .min(1)
+  .max(10)
+  .step(1)
+  .onFinishChange(() => {
+    generateGalaxy(
+      parameters.count,
+      parameters.size,
+      parameters.radius,
+      parameters.branches,
+      parameters.spin,
+      parameters.randomness,
+      parameters.randomnessPower,
+      parameters.insideColor,
+      parameters.outsideColor
+    );
+  });
+
+gui.addColor(parameters, 'insideColor').onFinishChange(() => {
+  generateGalaxy(
+    parameters.count,
+    parameters.size,
+    parameters.radius,
+    parameters.branches,
+    parameters.spin,
+    parameters.randomness,
+    parameters.randomnessPower,
+    parameters.insideColor,
+    parameters.outsideColor
+  );
+});
+
+gui.addColor(parameters, 'outsideColor').onFinishChange(() => {
+  generateGalaxy(
+    parameters.count,
+    parameters.size,
+    parameters.radius,
+    parameters.branches,
+    parameters.spin,
+    parameters.randomness,
+    parameters.randomnessPower,
+    parameters.insideColor,
+    parameters.outsideColor
+  );
+});
+
+gui.close();
 
 /**
  * Sizes
@@ -177,6 +338,9 @@ const tick = () => {
 
   // Update controls
   controls.update();
+
+  // Update points
+  points.rotation.y = elapsedTime * 0.2;
 
   // Render
   renderer.render(scene, camera);
