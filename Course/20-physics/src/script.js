@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import GUI from 'lil-gui';
-import CANNON from 'cannon';
+import * as CANNON from 'cannon-es';
 /**
  * Debug
  */
@@ -23,8 +23,39 @@ debugObject.createBox = () => {
   });
 };
 
+debugObject.reset = () => {
+  console.log('reset');
+  for (const obj of objectsToUpdate) {
+    // remove body
+    obj.body.removeEventListener('collide', playHitSound);
+    world.removeBody(obj.body);
+
+    // remove mesh
+    scene.remove(obj.mesh);
+  }
+
+  objectsToUpdate.length = 0;
+};
+
+debugObject.multipleShapes = () => {
+  for (let i = 0; i < 5; i++) {
+    createShape(Math.random() * 0.5, {
+      x: (Math.random() - 0.5) * 3,
+      y: 3,
+      z: (Math.random() - 0.5) * 3,
+    });
+    createBox(Math.random(), Math.random(), Math.random(), {
+      x: (Math.random() - 0.5) * 3,
+      y: 3,
+      z: (Math.random() - 0.5) * 3,
+    });
+  }
+};
+
 gui.add(debugObject, 'createShape');
 gui.add(debugObject, 'createBox');
+gui.add(debugObject, 'reset');
+gui.add(debugObject, 'multipleShapes');
 
 /**
  * Base
@@ -32,11 +63,24 @@ gui.add(debugObject, 'createBox');
 // Canvas
 const canvas = document.querySelector('canvas.webgl');
 
+// sounds
+const hitSound = new Audio('/sounds/hit.mp3');
+
+const playHitSound = (collision) => {
+  const impactStrenth = collision.contact.getImpactVelocityAlongNormal();
+  if (impactStrenth > 1.5) {
+    hitSound.volume = Math.random();
+    hitSound.currentTime = 0;
+    hitSound.play();
+  }
+};
+
 // physics
 
 // world
 const world = new CANNON.World();
-
+world.broadphase = new CANNON.SAPBroadphase(world);
+world.allowSleep = true;
 world.gravity.set(0, -9.82, 0);
 
 // Materials
@@ -85,7 +129,7 @@ const environmentMapTexture = cubeTextureLoader.load([
 const floor = new THREE.Mesh(
   new THREE.PlaneGeometry(10, 10),
   new THREE.MeshStandardMaterial({
-    color: '#777777',
+    color: 'lightblue',
     metalness: 0.3,
     roughness: 0.4,
     envMap: environmentMapTexture,
@@ -162,7 +206,7 @@ renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.setSize(sizes.width, sizes.height);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
+renderer.setClearColor(0xffffff, 1);
 /**
  * utils
  */
@@ -195,6 +239,7 @@ const createShape = (rad, position) => {
   });
 
   body.position.copy(position);
+  body.addEventListener('collide', playHitSound);
   world.addBody(body);
   // add to objects to update
 
@@ -234,6 +279,7 @@ const createBox = (width, height, depth, position) => {
   });
 
   body.position.copy(position);
+  body.addEventListener('collide', playHitSound);
   world.addBody(body);
   // add to objects to update
 
@@ -261,6 +307,15 @@ const tick = () => {
   for (const obj of objectsToUpdate) {
     obj.mesh.position.copy(obj.body.position);
     obj.mesh.quaternion.copy(obj.body.quaternion);
+  }
+
+  // remove sphere if out of plane
+  for (const obj of objectsToUpdate) {
+    if (obj.mesh.position.y < -1) {
+      obj.body.removeEventListener('collide', playHitSound);
+      world.removeBody(obj.body);
+      scene.remove(obj.mesh);
+    }
   }
 
   // Render
