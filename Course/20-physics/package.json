@@ -13,7 +13,10 @@
   },
   "dependencies": {
     "cannon-es": "^0.15.1",
+    "clsx": "^2.1.1",
+    "framer-motion": "^11.3.21",
     "lil-gui": "^0.19.2",
+    "tailwind-merge": "^2.4.0",
     "three": "^0.166.1"
   }
 }
