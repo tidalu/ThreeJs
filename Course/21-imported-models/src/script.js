@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 import GUI from 'lil-gui';
 
 /**
@@ -19,20 +20,47 @@ const scene = new THREE.Scene();
  * Models
  */
 
-const gltfLoader = new GLTFLoader();
+const dracoLoader = new DRACOLoader();
+dracoLoader.setDecoderPath('/draco/');
 
-gltfLoader.load(
-  '/models/Duck/glTF/Duck.gltf',
-  (gltf) => {
-    scene.add(gltf.scene.children[0]);
-  },
-  () => {
-    console.log('progress');
-  },
-  () => {
-    console.log('errror');
+const gltfLoader = new GLTFLoader();
+gltfLoader.setDRACOLoader(dracoLoader);
+// gltfLoader.load(
+//   '/models/FlightHelmet/glTF/FlightHelmet.gltf',
+//   (gltf) => {
+//     scene.add(...gltf.scene.children);
+//   },
+//   () => {
+//     console.log('progress');
+//   },
+//   () => {
+//     console.log('errror');
+//   }
+// );
+let mixer = null;
+let model = null;
+gltfLoader.load('models/Fox/glTF/Fox.gltf', (gltf) => {
+  model = gltf;
+
+  model.scene.scale.set(0.025, 0.025, 0.025);
+  scene.add(model.scene);
+
+  // Ensure the model has animations
+  if (model.animations && model.animations.length > 0) {
+    mixer = new THREE.AnimationMixer(model.scene);
+
+    setInterval(() => {
+      mixer.stopAllAction();
+      const action = mixer.clipAction(
+        model.animations[Math.floor(Math.random() * model.animations.length)]
+      );
+      action.play();
+    }, 3000);
+  } else {
+    console.error('No animations found in the model');
   }
-);
+});
+
 /**
  * Floor
  */
@@ -126,6 +154,9 @@ const tick = () => {
   const elapsedTime = clock.getElapsedTime();
   const deltaTime = elapsedTime - previousTime;
   previousTime = elapsedTime;
+
+  // update mixer
+  mixer?.update(deltaTime);
 
   // Update controls
   controls.update();
