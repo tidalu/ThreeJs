@@ -1,8 +1,10 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import GUI from 'lil-gui';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 /**
+ *
  * Base
  */
 // Debug
@@ -13,6 +15,14 @@ const canvas = document.querySelector('canvas.webgl');
 
 // Scene
 const scene = new THREE.Scene();
+
+// load models
+let model = null;
+const gltfLoader = new GLTFLoader();
+gltfLoader.load('/models/Duck/glTF-Binary/Duck.glb', (gltf) => {
+  model = gltf.scene;
+  scene.add(gltf.scene);
+});
 
 /**
  * Objects
@@ -35,6 +45,13 @@ const object3 = new THREE.Mesh(
 object3.position.x = 2;
 
 scene.add(object1, object2, object3);
+
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
+scene.add(ambientLight);
+
+const directionalLight = new THREE.DirectionalLight(0xffffff, 2.1);
+directionalLight.position.set(2, 2, 2);
+scene.add(directionalLight);
 
 /**
  * Raycaster
@@ -68,14 +85,28 @@ window.addEventListener('resize', () => {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 });
 
-
 // Mouse
-const mouse = new THREE.Vector2(); 
+const mouse = new THREE.Vector2();
 window.addEventListener('mousemove', (event) => {
-    mouse.x = event.clientX / sizes.width * 2 - 1;
-    mouse.y = - (event.clientY / sizes.height) * 2 + 1;
-})
+  mouse.x = (event.clientX / sizes.width) * 2 - 1;
+  mouse.y = -(event.clientY / sizes.height) * 2 + 1;
+});
 
+window.addEventListener('click', (event) => {
+  if (currentIntersect) {
+    switch (currentIntersect.object) {
+      case object1:
+        console.log('click on object1');
+        break;
+      case object2:
+        console.log('click on object2');
+        break;
+      case object3:
+        console.log('click on object3');
+        break;
+    }
+  }
+});
 /**
  * Camera
  */
@@ -106,6 +137,7 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
  * Animate
  */
 const clock = new THREE.Clock();
+let currentIntersect = null;
 
 const tick = () => {
   const elapsedTime = clock.getElapsedTime();
@@ -119,16 +151,38 @@ const tick = () => {
   //   const rayDirection = new THREE.Vector3(10, 0, 0);
   //   rayDirection.normalize();
   //   raycaster.set(rayOrigin, rayDirection);
-  //   const objectToTest = [object1, object2, object3];
-  //   const intersect = raycaster.intersectObject(object2);
-  //   const intersects = raycaster.intersectObjects(objectToTest);
+  const objectToTest = [object1, object2, object3];
+  const intersect = raycaster.intersectObject(object2);
+  const intersects = raycaster.intersectObjects(objectToTest);
 
-  //   for (let obj of objectToTest) {
-  //     obj.material.color = new THREE.Color('#ff0000');
-  //   }
-  //   for (const intersect of intersects) {
-  //     intersect.object.material.color = new THREE.Color('#0000ff');
-  //   }
+  for (let obj of objectToTest) {
+    obj.material.color = new THREE.Color('#ff0000');
+  }
+  for (const intersect of intersects) {
+    intersect.object.material.color = new THREE.Color('#0000ff');
+  }
+
+  if (intersects.length) {
+    if (currentIntersect === null) {
+      console.log('mouse enter');
+    }
+    currentIntersect = intersects[0];
+  } else {
+    if (currentIntersect !== null) {
+      console.log('mouse leave');
+    }
+    currentIntersect = null;
+  }
+  if (model) {
+    const modelIntersect = raycaster.intersectObject(model, true);
+    if (modelIntersect.length) {
+      model.scale.set(1.2, 1.2, 1.2);
+    } else {
+      model.scale.set(1, 1, 1);
+    }
+  }
+  raycaster.setFromCamera(mouse, camera);
+
   // Update controls
   controls.update();
 
